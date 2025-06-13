@@ -1,0 +1,1 @@
+A simple GUI application I made to learn tkinter. It tracks a device's uptime, internet connectivity, and connections, intended to go along with the Kavita server I have running on an old laptop. Feel free to use or modify it if you would like!
