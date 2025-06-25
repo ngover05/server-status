@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from status_manager import *
+from log_manager import *
 
 class GUI:
     def __init__(self):
@@ -23,10 +24,17 @@ class GUI:
         self.online_lbl = ttk.Label(self.online_frame, font=('Arial', 48), text="Connectivity status: ")
         self.online_lbl.grid(row=0, column=0)
 
-        self.connected_lbl = ttk.Label(self.online_frame, font=('Arial', 48))
+        self.connected_lbl = ttk.Label(self.online_frame, font=('Arial', 48), text="Online")
         self.connected_lbl.grid(row=0, column=1)
 
         self.log_frame = ttk.Frame(self.root)
+        self.log_frame.pack(fill='x', pady=100)
+
+        self.log_lbl = ttk.Label(self.log_frame, font=('Arial', 18), text="Logs")
+        self.log_lbl.pack(anchor=tk.NW)
+
+        self.log_box = tk.Text(self.log_frame, font=('Arial', 18), state='disabled')
+        self.log_box.pack(fill=tk.X)
 
         self.update_uptime()
         self.was_offline = False # Used to check if we need to log a restoration in internet connection
@@ -42,11 +50,18 @@ class GUI:
     def update_connected(self):
         if is_online():
             if self.was_offline:
-                pass
-            self.connected_lbl.config(text="Online")
+                self.log_box.config(state='normal')
+                self.log_box.insert(tk.INSERT, create_internet_log(self.was_offline))
+                self.log_box.config(state='disabled')
+                self.connected_lbl.config(text="Online")
+                self.was_offline = False
         else :
             self.connected_lbl.config(text="Offline")
-            self.was_offline = True
+            if not self.was_offline:
+                self.log_box.config(state='normal')
+                self.log_box.insert(tk.INSERT, create_internet_log(self.was_offline))
+                self.log_box.config(state='disabled')
+                self.was_offline = True
         self.connected_lbl.after(1000, self.update_connected)
 
 
